@@ -119,11 +119,12 @@ Harware Purchase Deal  <> Thermostat:  In this specific case a Themostat can onl
 ## F. Design Decisions 
 Assumptions made include the fact that Breezy is collecting information on the hardware 
 
-In terms of additional information that would be helpful from the  client: 
-What are the key questions you are looking to answer on the HubSpot side? 
+In terms of additional information that would be helpful from the  client, I'd like to be able to ask: 
 
-Do subscriptions last for a designated amount of time (have an end date) or do they run until cancelled. This would also inform whether a renewal process would be relevant 
+- What are the key questions you are looking to answer on the HubSpot side? 
 
-From a goal and business perspective, are we looking to have Breezy or HubSpot function as a source of truth? This could help inform whether the integration is one direction or bi-directional. 
+- Do subscriptions last for a designated amount of time (have an end date) or do they run until cancelled. This would also inform whether a renewal process would be relevant 
+
+- From a goal and business perspective, are we looking to have Breezy or HubSpot function as a source of truth? This could help inform whether the integration is one direction or bi-directional. 
 
 
