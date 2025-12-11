@@ -1,397 +1,128 @@
-# test HubSpot Integration Backend - Breezy Technical Assessment
+# Breezy + HubSpot Integration POC
 
-This is a backend server for the HubSpot Solutions Architect Technical Assessment. It provides a proxy layer between your frontend application and the HubSpot CRM API.
+This project is a proof-of-concept (POC) backend + frontend integration showing how your company **Breezy**, a smart thermostat company, could sync customer data and subscription activity into **HubSpot** using the CRM API.
 
-## Overview
+The app includes:
 
-This Express.js server handles authentication and proxies requests to the HubSpot API. You'll build a frontend application that calls these endpoints to demonstrate how Breezy (a smart home technology company) would integrate their platform with HubSpot.
+- An Express.js backend that proxies to HubSpot
+- A simple browser-based frontend (`/public/frontend.html`)
+- Flows to:
+  - Sync customers as HubSpot **contacts**
+  - Track subscription conversions as HubSpot **deals**
+  - View deals (subscriptions) per contact
+- A documented data model & pipeline design for Breezy’s HubSpot architecture
 
-## Prerequisites
+---
 
-- Node.js (v14 or higher)
-- npm or yarn
-- A free HubSpot account
-- HubSpot Private App access token
+## A. Setup Instructions
+1. Running the Application Locally
 
-## Setup Instructions
+This project consists of two components:
 
-### 1. Install Dependencies
+Frontend (static HTML/JS application you extend)
 
-```bash
+Backend (Node/Express server connecting to HubSpot’s APIs)
+
+To run locally:
+
+Clone the repository:
+
+git clone <https://github.com/kgibson922-dev/hs-solution-architect-tech-assignment-main-test.git>
+cd breezy-hubspot-poc
+
+
+Install backend dependencies:
+
+cd backend
 npm install
-```
 
-### 2. Get Your HubSpot Access Token
 
-1. Sign up for a [free HubSpot account](https://offers.hubspot.com/free-trial)
-2. Navigate to **Development** → **Legacy Apps**
-3. Click **Create a private app**
-4. Give it a name (e.g., "SA Assessment App")
-5. Go to the **Scopes** tab and enable:
-   - `crm.objects.contacts.read`
-   - `crm.objects.contacts.write`
-   - `crm.objects.deals.read`
-   - `crm.objects.deals.write`
-6. Click **Create app** and copy your access token
+Start the backend:
 
-### 3. Configure Environment Variables
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` and add your HubSpot token:
-
-```
-HUBSPOT_ACCESS_TOKEN=pat-na1-your-token-here
-```
-
-### 4. Start the Server
-
-**For development (with hot-reloading):**
-
-```bash
-npm run dev
-```
-
-This will automatically restart the server when you make changes to `server.js`.
-
-**For production:**
-
-```bash
 npm start
-```
 
-You should see:
 
-```
-✅ Server running successfully!
-🌐 API available at: http://localhost:3001
-📋 Health check: http://localhost:3001/health
-📁 Static files served from: /public
-```
+You should see the server running on:
+http://localhost:3001
 
-**To stop the server:** Press `Ctrl+C` (the server will gracefully shut down)
+Open the frontend:
 
-### 5. Test the Server
+Either open frontend.html directly in your browser -- if this doesn't work go to http://localhost:3001/frontend.html
 
-Open your browser or use curl:
+2. Dependencies / Prerequisites
 
-```bash
-curl http://localhost:3001/health
-```
+Node.js v18+ (required to support native fetch)
 
-Should return:
+npm
 
-```json
-{
-  "status": "Server is running",
-  "timestamp": "2025-11-10T..."
-}
-```
+HubSpot Private App Token with:
 
-## API Endpoints
+CRM Read/Write permissions for Contacts
 
-### Health Check
+CRM Read/Write permissions for Deals
 
-**GET** `/health`
+Browser supporting ES6 modules
 
-Check if the server is running.
+3. Required Environment Variables
 
-**Response:**
+Create a .env file in the backend directory:
 
-```json
-{
-  "status": "Server is running",
-  "timestamp": "2025-11-10T12:00:00.000Z"
-}
-```
+Variable	Description
+HUBSPOT_PRIVATE_APP_TOKEN	Token for HubSpot API requests 
+Example: HUBSPOT_PRIVATE_APP_TOKEN=pat-xxxxxx
 
----
+4. How to Test the Integration Flow
 
-### Get Contacts
+Create a Contact from the frontend UI
+→ Should POST to /api/contacts → HubSpot CRM
 
-**GET** `/api/contacts`
+View Contacts List
+→ Should GET from /api/contacts (proxying HubSpot search endpoint)
 
-Fetch all contacts from HubSpot (limited to 50).
+Create a Deal for a contact
+→ Should POST to /api/deals with associations
 
-**Response:**
+View Deals for a Contact
+→ Should GET from /api/contacts/:id/deals
 
-```json
-{
-  "results": [
-    {
-      "id": "12345",
-      "properties": {
-        "firstname": "Alex",
-        "lastname": "Rivera",
-        "email": "alex@example.com",
-        "phone": "555-0123",
-        "address": "123 Main St"
-      }
-    }
-  ]
-}
-```
+B. Project Overview
 
----
+This Proof of Concept showcases how Breezy’s applicant data could integrate seamlessly into HubSpot CRM.
+It demonstrates:
 
-### Create Contact
+Syncing candidate/contact data from Breezy → HubSpot
 
-**POST** `/api/contacts`
+Automatically generating deals representing hiring stages
 
-Create a new contact in HubSpot.
+Presenting contacts, deals, and related CRM data in a clean frontend
 
-**Request Body:**
+Adding an AI-driven enhancement to improve recruiter productivity
 
-```json
-{
-  "properties": {
-    "firstname": "Alex",
-    "lastname": "Rivera",
-    "email": "alex@example.com",
-    "phone": "555-0123",
-    "address": "123 Main St"
-  }
-}
-```
+The POC is intentionally lightweight but models the architecture needed for a production-ready integration.
 
-**Response:**
+C. AI Usage Documentation 
+AI was used across this assessment task. It was used to get started with GitHub. It was also used to develop code for the frontend.html file and troubleshoot leveraging Github as there were hurdles. In terms of learnings, the overall task and conversation in this scenario feels familiar, but the challenge was rooted in getting started with a toolset I'm not as familiar with in the asks of my current job function as a CSM. It's humbling entering tools and needing to learn how to make them function -- truthfully it is a good reminder to bear in mind working day in and day out with customers. AI really allowed me get my bearings and from there I was able to lean on experience to work on the task at hand in discovering and solving for this customer.   
 
-```json
-{
-  "id": "12345",
-  "properties": {
-    "firstname": "Alex",
-    "lastname": "Rivera",
-    "email": "alex@example.com",
-    ...
-  }
-}
-```
-
----
-
-### Get All Deals
-
-**GET** `/api/deals`
-
-Fetch all deals from HubSpot (limited to 50).
-
-**Response:**
-
-```json
-{
-  "results": [
-    {
-      "id": "67890",
-      "properties": {
-        "dealname": "Breezy Premium - Annual",
-        "amount": "99",
-        "dealstage": "closedwon"
-      }
-    }
-  ]
-}
-```
-
----
-
-### Create Deal
-
-**POST** `/api/deals`
-
-Create a new deal in HubSpot and associate it with a contact.
-
-**Request Body:**
-
-```json
-{
-  "dealProperties": {
-    "dealname": "Breezy Premium - Annual Subscription",
-    "amount": "99",
-    "dealstage": "closedwon"
-  },
-  "contactId": "12345"
-}
-```
-
-**Response:**
-
-```json
-{
-  "id": "67890",
-  "properties": {
-    "dealname": "Breezy Premium - Annual Subscription",
-    "amount": "99",
-    "dealstage": "closedwon"
-  }
-}
-```
-
----
-
-### Get Deals for Contact
-
-**GET** `/api/contacts/:contactId/deals`
-
-Get all deals associated with a specific contact.
-
-**Example:**
-
-```
-GET /api/contacts/12345/deals
-```
-
-**Response:**
-
-```json
-{
-  "results": [
-    {
-      "id": "67890",
-      "properties": {
-        "dealname": "Breezy Premium - Annual",
-        "amount": "99",
-        "dealstage": "closedwon"
-      }
-    }
-  ]
-}
-```
-
-## Testing with cURL
-
-### Create a contact:
-
-```bash
-curl -X POST http://localhost:3001/api/contacts \
-  -H "Content-Type: application/json" \
-  -d '{
-    "properties": {
-      "firstname": "Test",
-      "lastname": "Customer",
-      "email": "test@breezy.com"
-    }
-  }'
-```
+D. Data Architecture is include in the Screenshot Folder labeled ERD - Tech Assessment Diagram 
+Business Flow: A contact comes into the system when they purchase a Thermostate. That purcahse should be reflected as a Deal in a specific pipeline to enable revenue tracking, reporting, and segmenation effort. Information about the actual Thermostate should also be captured on a custom object should warranty or recall information be necessary. From there, if a Contact activates a trial or purchases a subscription outright following their  Hardware purchase that should be captured in a separate pipeline. This is where with deal stages there is an ability to capture conversion through deal stages, but also the overall close won revenue Breezy is capturing on the SaaS side of the business.
+Association relationships include: 
+Contact <> Thermostat:  One Contact can be associated to many thermostats, but a themostat can only be associated to one contact. 
+Reason: A contact can be associated to multiple thermostats because they could have mulltiple homes or there could need to be serveral themostats installed in their home depending on their HVAC set up 
 
-### Get all contacts:
+Contact <> Hardware Purchase Deal:  One contact can be associated to multiple Hardware Purchase Deals. For simliar reasons above a contact may purchase multiple thermostats for multiple homes, for their HVAC setup or overtime an existing thermostat may break and need replacing 
 
-```bash
-curl http://localhost:3001/api/contacts
-```
-
-### Create a deal:
-
-```bash
-curl -X POST http://localhost:3001/api/deals \
-  -H "Content-Type: application/json" \
-  -d '{
-    "dealProperties": {
-      "dealname": "Breezy Premium - Monthly",
-      "amount": "9.99",
-      "dealstage": "closedwon"
-    },
-    "contactId": "12345"
-  }'
-```
-
-## Common Deal Stages
-
-For the Breezy use case, you can use these standard HubSpot deal stages:
-
-- `appointmentscheduled` - Trial started
-- `qualifiedtobuy` - Active trial user
-- `closedwon` - Converted to paid subscription
-- `closedlost` - Trial ended without conversion
-
-## Error Handling
-
-All endpoints return errors in this format:
-
-```json
-{
-  "error": "Human-readable error message",
-  "details": "Technical details from HubSpot API"
-}
-```
-
-Common errors:
-
-- **401 Unauthorized**: Check your `HUBSPOT_ACCESS_TOKEN` in `.env`
-- **403 Forbidden**: Your private app may not have the required scopes
-- **404 Not Found**: Contact or deal ID doesn't exist
-- **500 Internal Server Error**: Check console logs for details
-
-## Project Structure
-
-```
-2026-SA-Tech-Assessment/
-├── server.js           # Main Express server
-├── package.json        # Dependencies and scripts
-├── .env.example        # Example environment variables
-├── .gitignore         # Git ignore rules
-└── README.md          # This file
-```
-
-## Your Task
-
-Build a frontend application that:
-
-1. Displays contacts from `GET /api/contacts`
-2. Creates contacts via `POST /api/contacts`
-3. Creates deals via `POST /api/deals`
-4. Shows deals for each contact via `GET /api/contacts/:contactId/deals`
-5. Incorporates an AI feature using OpenAI or Anthropic API
-
-You can build your frontend in the `/public` folder or in a separate directory.
-
-## Troubleshooting
-
-### Port 3001 Already in Use
-
-If you see an error like `EADDRINUSE: address already in use ::1:3001`:
-
-**On Mac/Linux:**
-
-```bash
-# Find the process using port 3001
-lsof -ti:3001
-
-# Kill the process
-kill -9 $(lsof -ti:3001)
-```
-
-**On Windows:**
-
-```bash
-# Find the process
-netstat -ano | findstr :3001
-
-# Kill it (replace PID with the number from above)
-taskkill /PID <PID> /F
-```
-
-**Note:** The updated `server.js` now includes graceful shutdown, so pressing `Ctrl+C` should properly close the port.
-
-### Other Common Issues
-
-1. **401 Unauthorized**: Check that your `.env` file has a valid `HUBSPOT_ACCESS_TOKEN`
-2. **403 Forbidden**: Your HubSpot Private App may not have the required scopes
-3. **404 Not Found**: Contact or deal ID doesn't exist in your HubSpot portal
-4. **Module not found**: Run `npm install` to install dependencies
-5. Check the console logs for detailed error messages
-6. Test endpoints with curl to isolate frontend vs backend issues
-
-## Features
-
-- **Graceful Shutdown**: Server properly closes connections when stopped (Ctrl+C)
-- **Hot Reloading**: Use `npm run dev` for automatic restart on file changes
-- **Static File Serving**: Files in `/public` are automatically served
-- **Port 3001**: Runs on localhost:3001 by default
-- **CORS Enabled**: All origins allowed (development only)
-- **Token Validation**: Server won't start without valid HubSpot token
-- **Comprehensive Error Handling**: Detailed error messages for debugging
-
-Good luck with your assessment!
+Contact <> Subscription Deals:  One contact can be associated to multiple Subscription Purchase Deals, but the subscription will be assocaited to one contact. The rationale here is again there may be a need to purchase multiple subscriptions for different locations or a contact may purchase, churn and then return to subscribing agan. 
+
+Harware Purchase Deal  <> Thermostat:  In this specific case a Themostat can only be associated with a single deal, but a deal could contain a quantity of one or multiple themostats. 
+
+F. Design Decsions 
+Assumptions made include the fact that Breezy is collecting information on the hardware 
+
+In terms of additional information that would be helpful from the  client: 
+What are the key questions you are looking to answer on the HubSpot side? 
+
+Do subscriptions last for a designated amount of time (have an end date) or do they run until cancelled. This would also inform whether a renewal process would be relevant 
+
+From a goal and business perspective, are we looking to have Breezy or HubSpot function as a source of truth? This could help inform whether the integration is one direction or bi-directional. 
+
+
