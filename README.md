@@ -19,16 +19,16 @@ The app includes:
 
 This project consists of two components:
 
-Frontend (static HTML/JS application you extend)
+- Frontend (static HTML/JS application you extend)
 
-Backend (Node/Express server connecting to HubSpot’s APIs)
+- Backend (Node/Express server connecting to HubSpot’s APIs)
 
 To run locally:
 
-Clone the repository:
+- Clone the repository:
 
-git clone <https://github.com/kgibson922-dev/hs-solution-architect-tech-assignment-main-test.git>
-cd breezy-hubspot-poc
+- git clone <https://github.com/kgibson922-dev/hs-solution-architect-tech-assignment-main-test.git>
+- cd breezy-hubspot-poc
 
 
 Install backend dependencies:
