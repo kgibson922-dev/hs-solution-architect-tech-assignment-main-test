@@ -101,7 +101,11 @@ It demonstrates:
 The POC is intentionally lightweight but models the architecture needed for a production-ready integration.
 
 ## C. AI Usage Documentation 
-AI was used across this assessment task. It was used to get started with GitHub. It was also used to develop code for the frontend.html file and troubleshoot leveraging Github as there were hurdles. In terms of learnings, the overall task and conversation in this scenario feels familiar, but the challenge was rooted in getting started with a toolset I'm not as familiar with in the asks of my current job function as a CSM. It's humbling entering tools and needing to learn how to make them function -- truthfully it is a good reminder to bear in mind working day in and day out with customers. AI really allowed me get my bearings and from there I was able to lean on experience to work on the task at hand in discovering and solving for this customer.   
+AI was used across this assessment task. It was used to get started with GitHub. AI really allowed me get my bearings and from there I was able to lean on experience to work on the task at hand in discovering and solving for this customer. A couple example prompts included: I'm new to using GitHub, explain it's use case and how to get started wiht it as if I was a 6th grader.   
+
+It was also used to develop code for the frontend.html file and troubleshoot leveraging Github as there were hurdles. 
+
+In terms of learnings, the overall task and conversation in this scenario feels familiar, but the challenge was rooted in getting started with a toolset I don't encounter in the asks of my current job function as a CSM. It's humbling entering tools and needing to learn how to make them function -- truthfully it is a good reminder working day in and day out with customers as the landscape of HubSpot changes for them. 
 
 ## D. Data Architecture is include in the Screenshot Folder labeled ERD - Tech Assessment Diagram
 
