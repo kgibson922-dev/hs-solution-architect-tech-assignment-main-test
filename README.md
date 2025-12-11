@@ -28,8 +28,6 @@ To run locally:
 - Clone the repository:
 
 - git clone <https://github.com/kgibson922-dev/hs-solution-architect-tech-assignment-main-test.git>
-- cd breezy-hubspot-poc
-
 
 Install backend dependencies:
 
@@ -47,7 +45,7 @@ http://localhost:3001
 
 Open the frontend:
 
-Either open frontend.html directly in your browser -- if this doesn't work go to http://localhost:3001/frontend.html
+Either open frontend.html directly in your browser -- if this doesn't work go to http://localhost:3001/frontend.html once you've received the confirmation server is running succesfully
 
 2. Dependencies / Prerequisites
 
