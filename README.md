@@ -33,13 +33,13 @@ To run locally:
 
 Install backend dependencies:
 
-cd backend
-npm install
+- cd backend
+- npm install
 
 
 Start the backend:
 
-npm start
+- npm start
 
 
 You should see the server running on:
@@ -51,17 +51,17 @@ Either open frontend.html directly in your browser -- if this doesn't work go to
 
 2. Dependencies / Prerequisites
 
-Node.js v18+ (required to support native fetch)
+- Node.js v18+ (required to support native fetch)
 
-npm
+- npm
 
-HubSpot Private App Token with:
+- HubSpot Private App Token with:
 
-CRM Read/Write permissions for Contacts
+- CRM Read/Write permissions for Contacts
 
-CRM Read/Write permissions for Deals
+- CRM Read/Write permissions for Deals
 
-Browser supporting ES6 modules
+- Browser supporting ES6 modules
 
 3. Required Environment Variables
 
@@ -90,13 +90,13 @@ View Deals for a Contact
 This Proof of Concept showcases how Breezy’s applicant data could integrate seamlessly into HubSpot CRM.
 It demonstrates:
 
-Syncing candidate/contact data from Breezy → HubSpot
+- Syncing candidate/contact data from Breezy → HubSpot
 
-Automatically generating deals representing hiring stages
+- Automatically generating deals representing hiring stages
 
-Presenting contacts, deals, and related CRM data in a clean frontend
+- Presenting contacts, deals, and related CRM data in a clean frontend
 
-Adding an AI-driven enhancement to improve recruiter productivity
+- Adding an AI-driven enhancement to improve recruiter productivity
 
 The POC is intentionally lightweight but models the architecture needed for a production-ready integration.
 
