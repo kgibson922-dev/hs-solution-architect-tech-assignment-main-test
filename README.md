@@ -85,7 +85,7 @@ Create a Deal for a contact
 View Deals for a Contact
 → Should GET from /api/contacts/:id/deals
 
-B. Project Overview
+## B.Project Overview
 
 This Proof of Concept showcases how Breezy’s applicant data could integrate seamlessly into HubSpot CRM.
 It demonstrates:
@@ -100,10 +100,11 @@ Adding an AI-driven enhancement to improve recruiter productivity
 
 The POC is intentionally lightweight but models the architecture needed for a production-ready integration.
 
-C. AI Usage Documentation 
+## C. AI Usage Documentation 
 AI was used across this assessment task. It was used to get started with GitHub. It was also used to develop code for the frontend.html file and troubleshoot leveraging Github as there were hurdles. In terms of learnings, the overall task and conversation in this scenario feels familiar, but the challenge was rooted in getting started with a toolset I'm not as familiar with in the asks of my current job function as a CSM. It's humbling entering tools and needing to learn how to make them function -- truthfully it is a good reminder to bear in mind working day in and day out with customers. AI really allowed me get my bearings and from there I was able to lean on experience to work on the task at hand in discovering and solving for this customer.   
 
-D. Data Architecture is include in the Screenshot Folder labeled ERD - Tech Assessment Diagram 
+## D. Data Architecture is include in the Screenshot Folder labeled ERD - Tech Assessment Diagram
+
 Business Flow: A contact comes into the system when they purchase a Thermostate. That purcahse should be reflected as a Deal in a specific pipeline to enable revenue tracking, reporting, and segmenation effort. Information about the actual Thermostate should also be captured on a custom object should warranty or recall information be necessary. From there, if a Contact activates a trial or purchases a subscription outright following their  Hardware purchase that should be captured in a separate pipeline. This is where with deal stages there is an ability to capture conversion through deal stages, but also the overall close won revenue Breezy is capturing on the SaaS side of the business.
 Association relationships include: 
 Contact <> Thermostat:  One Contact can be associated to many thermostats, but a themostat can only be associated to one contact. 
@@ -115,7 +116,7 @@ Contact <> Subscription Deals:  One contact can be associated to multiple Subscr
 
 Harware Purchase Deal  <> Thermostat:  In this specific case a Themostat can only be associated with a single deal, but a deal could contain a quantity of one or multiple themostats. 
 
-F. Design Decsions 
+## F. Design Decisions 
 Assumptions made include the fact that Breezy is collecting information on the hardware 
 
 In terms of additional information that would be helpful from the  client: 
