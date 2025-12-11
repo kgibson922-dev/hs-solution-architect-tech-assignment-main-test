@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Test Breezy + HubSpot Integration Demo</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 2rem;
+      background: #f7f7fb;
+      color: #222;
+    }
+    h1, h2, h3 {
+      margin-bottom: 0.4rem;
+    }
+    .subtitle {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 1.5rem;
+    }
+    .section {
+      background: #fff;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+    button {
+      padding: 0.5rem 0.9rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background: #FF7A59;
+      color: white;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    button.secondary {
+      background: #fff;
+      color: #0657f9;
+      border-color: #0657f9;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+    label {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+    input {
+      margin-top: 0.25rem;
+      padding: 0.35rem 0.45rem;
+      width: 260px;
+      max-width: 100%;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 0.9rem;
+    }
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .status {
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+    .status.error {
+      color: #c00;
+    }
+    .status.success {
+      color: #0a7a24;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+    th, td {
+      border: 1px solid #dfdfdf;
+      padding: 0.5rem 0.6rem;
+      text-align: left;
+    }
+    th {
+      background: #f1f3f8;
+      font-weight: 600;
+    }
+    .pill {
+      display: inline-block;
+      padding: 0.2rem 0.45rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      background: #e6f0ff;
+      color: #0657f9;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+    .small {
+      font-size: 0.8rem;
+      color: #666;
+    }
+    .deal-card {
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      background: #fafbff;
+    }
+  </style>
+</head>
+<body>
+  <h1>Breezy + HubSpot Integration</h1>
+  <p class="subtitle">
+    Proof-of-concept UI showing how Breezy’s thermostat customers sync to HubSpot contacts & deals.
+    Frontend → <code>http://localhost:3001/api/*</code> backend.
+  </p>
+
+  <!-- A. SYNC CUSTOMER DATA TO HUBSPOT -->
+  <div class="section">
+    <div class="section-header">
+      <div>
+        <h2>A. Sync Customer Data to HubSpot</h2>
+        <p class="small">
+          View customer records stored in HubSpot, and simulate a thermostat purchase creating a new account.
+        </p>
+      </div>
+      <button id="refreshContactsBtn">Refresh Contacts</button>
+    </div>
+
+    <!-- View synced contacts -->
+    <h3>1. View synced contacts</h3>
+    <p class="small">
+      Fetches from <code>GET /api/contacts</code> and shows first name, last name, email, job title, and company.
+    </p>
+    <div id="contactsStatus" class="status"></div>
+    <div id="contactsTableWrapper"></div>
+
+    <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid #eee;" />
+
+    <!-- Simulate customer data sync -->
+    <h3>2. Simulate thermostat purchase → Create HubSpot contact</h3>
+    <p class="small">
+      In production, this would run automatically when a customer buys a thermostat and creates an account.
+      Here, we simulate it with a form and <code>POST /api/contacts</code>.
+    </p>
+
+    <div class="grid-2">
+      <div>
+        <div class="form-row">
+          <div>
+            <label>First name *</label>
+            <input id="ct_firstname" placeholder="Alex" />
+          </div>
+          <div>
+            <label>Last name *</label>
+            <input id="ct_lastname" placeholder="Rivera" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label>Email *</label>
+            <input id="ct_email" placeholder="alex@example.com" type="email" />
+          </div>
+          <div>
+            <label>Phone (Optional)</label>
+            <input id="ct_phone" placeholder="555-555-5555" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label>Address (Optional)</label>
+            <input id="ct_address" placeholder="12 North Pole Drive" />
+          </div>
+        </div>
+
+        <button id="createContactBtn" style="margin-top: 0.75rem;">
+          Create Contact in HubSpot
+        </button>
+        <div id="createContactStatus" class="status"></div>
+      </div>
+
+      <div class="small">
+        <p><strong>What this shows:</strong></p>
+        <ul>
+          <li>How Breezy could send purchase/account data into HubSpot as contacts.</li>
+          <li>API call: <code>POST /api/contacts</code> with a JSON payload.</li>
+          <li>New contacts appear immediately in the table above after creation.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- B. TRACK SUBSCRIPTION CONVERSIONS (DEALS) -->
+  <div class="section">
+    <h2>B. Track Subscription Conversions (Deals)</h2>
+    <p class="small">
+      When a Breezy customer converts from free trial to paid subscription, track it as a HubSpot deal.
+    </p>
+
+    <div class="grid-2">
+      <!-- Deal creation interface -->
+      <div>
+        <h3>1. Create a subscription deal</h3>
+        <p class="small">
+          Associates a subscription with a HubSpot contact. Uses <code>POST /api/deals</code>.
+        </p>
+
+        <div class="form-row">
+          <div>
+            <label>Contact ID (HubSpot) *</label>
+            <input id="deal_contactId" placeholder="Copy from contacts table above" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label>Deal name *</label>
+            <input id="deal_name" placeholder="Breezy Premium - Annual Subscription" />
+          </div>
+          <div>
+            <label>Amount *</label>
+            <input id="deal_amount" placeholder="99" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label>Deal stage *</label>
+            <input id="deal_stage" value="closedwon" />
+            <p class="small">Use <code>closedwon</code> to indicate a successful subscription conversion.</p>
+          </div>
+        </div>
+
+        <button id="createDealBtn" style="margin-top: 0.75rem;">
+          Create Subscription Deal
+        </button>
+        <div id="createDealStatus" class="status"></div>
+      </div>
+
+      <!-- View subscription status / deals -->
+      <div>
+        <h3>2. View deals (subscriptions) for a contact</h3>
+        <p class="small">
+          Look up a contact’s subscription history via <code>GET /api/contacts/:contactId/deals</code>.
+        </p>
+
+        <div class="form-row">
+          <div>
+            <label>Contact ID *</label>
+            <input id="deals_contactId" placeholder="Same Contact ID as above" />
+          </div>
+        </div>
+
+        <button id="loadDealsBtn" style="margin-top: 0.75rem;" class="secondary">
+          Load Deals for Contact
+        </button>
+        <div id="dealsStatus" class="status"></div>
+        <div id="dealsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "http://localhost:3001/api";
+
+    // UTILS
+    function setStatus(el, message, type) {
+      el.textContent = message || "";
+      el.classList.remove("error", "success");
+      if (type) el.classList.add(type);
+    }
+
+    // ========== A. CONTACTS / CUSTOMER DATA ==========
+
+    const contactsStatusEl = document.getElementById("contactsStatus");
+    const contactsTableWrapper = document.getElementById("contactsTableWrapper");
+    const refreshContactsBtn = document.getElementById("refreshContactsBtn");
+
+    async function loadContacts() {
+      setStatus(contactsStatusEl, "Loading contacts from HubSpot...", "");
+      contactsTableWrapper.innerHTML = "";
+      refreshContactsBtn.disabled = true;
+
+      try {
+        const res = await fetch(`${API_BASE}/contacts`);
+        if (!res.ok) {
+          const errorBody = await res.json().catch(() => ({}));
+          throw new Error(errorBody.error || "Failed to load contacts");
+        }
+
+        const data = await res.json();
+        const results = data.results || [];
+
+        if (results.length === 0) {
+          setStatus(contactsStatusEl, "No contacts found in HubSpot yet.", "");
+          return;
+        }
+
+        // Build table
+        const table = document.createElement("table");
+        table.innerHTML = `
+          <thead>
+            <tr>
+              <th>First name</th>
+              <th>Last name</th>
+              <th>Email</th>
+              <th>Job title</th>
+              <th>Company</th>
+              <th>Contact ID</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        `;
+        const tbody = table.querySelector("tbody");
+
+        results.forEach(contact => {
+          const p = contact.properties || {};
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${p.firstname || ""}</td>
+            <td>${p.lastname || ""}</td>
+            <td>${p.email || ""}</td>
+            <td>${p.jobtitle || ""}</td>
+            <td>${p.company || ""}</td>
+            <td><span class="pill">${contact.id}</span></td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        contactsTableWrapper.innerHTML = "";
+        contactsTableWrapper.appendChild(table);
+        setStatus(contactsStatusEl, `Loaded ${results.length} contact(s) from HubSpot.`, "success");
+      } catch (err) {
+        console.error(err);
+        setStatus(contactsStatusEl, "Error loading contacts: " + err.message, "error");
+      } finally {
+        refreshContactsBtn.disabled = false;
+      }
+    }
+
+    refreshContactsBtn.addEventListener("click", loadContacts);
+
+    // Contact creation (simulated thermostat purchase)
+    const createContactBtn = document.getElementById("createContactBtn");
+    const createContactStatusEl = document.getElementById("createContactStatus");
+
+    async function createContact() {
+      const firstname = document.getElementById("ct_firstname").value.trim();
+      const lastname = document.getElementById("ct_lastname").value.trim();
+      const email = document.getElementById("ct_email").value.trim();
+      const phone = document.getElementById("ct_phone").value.trim();
+      const address = document.getElementById("ct_address").value.trim();
+
+      if (!firstname || !lastname || !email) {
+        setStatus(createContactStatusEl, "First name, last name, and email are required.", "error");
+        return;
+      }
+
+      setStatus(createContactStatusEl, "Creating contact in HubSpot...", "");
+      createContactBtn.disabled = true;
+
+      const body = {
+        properties: {
+          firstname,
+          lastname,
+          email
+        }
+      };
+
+      if (phone) body.properties.phone = phone;
+      if (address) body.properties.address = address;
+
+      try {
+        const res = await fetch(`${API_BASE}/contacts`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        });
+
+        if (!res.ok) {
+          const errorBody = await res.json().catch(() => ({}));
+          throw new Error(errorBody.error || "Failed to create contact");
+        }
+
+        const data = await res.json();
+        setStatus(createContactStatusEl, "Contact created in HubSpot! ID: " + data.id, "success");
+
+        // Clear inputs (optional)
+        document.getElementById("ct_firstname").value = "";
+        document.getElementById("ct_lastname").value = "";
+        document.getElementById("ct_email").value = "";
+        document.getElementById("ct_phone").value = "";
+        document.getElementById("ct_address").value = "";
+
+        // Refresh contacts table to show the new contact
+        await loadContacts();
+      } catch (err) {
+        console.error(err);
+        setStatus(createContactStatusEl, "Error creating contact: " + err.message, "error");
+      } finally {
+        createContactBtn.disabled = false;
+      }
+    }
+
+    createContactBtn.addEventListener("click", createContact);
+
+    // ========== B. DEALS / SUBSCRIPTION CONVERSIONS ==========
+
+    const createDealBtn = document.getElementById("createDealBtn");
+    const createDealStatusEl = document.getElementById("createDealStatus");
+    const loadDealsBtn = document.getElementById("loadDealsBtn");
+    const dealsStatusEl = document.getElementById("dealsStatus");
+    const dealsListEl = document.getElementById("dealsList");
+
+    async function createDeal() {
+      const contactId = document.getElementById("deal_contactId").value.trim();
+      const dealname = document.getElementById("deal_name").value.trim();
+      const amount = document.getElementById("deal_amount").value.trim();
+      const dealstage = document.getElementById("deal_stage").value.trim() || "closedwon";
+
+      if (!contactId || !dealname || !amount) {
+        setStatus(createDealStatusEl, "Contact ID, deal name, and amount are required.", "error");
+        return;
+      }
+
+      setStatus(createDealStatusEl, "Creating subscription deal in HubSpot...", "");
+      createDealBtn.disabled = true;
+
+      const body = {
+        dealProperties: {
+          dealname,
+          amount,
+          dealstage
+        },
+        contactId
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/deals`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        });
+
+        if (!res.ok) {
+          const errorBody = await res.json().catch(() => ({}));
+          throw new Error(errorBody.error || "Failed to create deal");
+        }
+
+        const data = await res.json();
+        setStatus(
+          createDealStatusEl,
+          `Deal created in HubSpot! Deal ID: ${data.id}`,
+          "success"
+        );
+      } catch (err) {
+        console.error(err);
+        setStatus(createDealStatusEl, "Error creating deal: " + err.message, "error");
+      } finally {
+        createDealBtn.disabled = false;
+      }
+    }
+
+    createDealBtn.addEventListener("click", createDeal);
+
+    async function loadDealsForContact() {
+      const contactId = document.getElementById("deals_contactId").value.trim();
+
+      if (!contactId) {
+        setStatus(dealsStatusEl, "Please enter a contact ID.", "error");
+        return;
+      }
+
+      setStatus(dealsStatusEl, "Loading deals for contact...", "");
+      dealsListEl.innerHTML = "";
+      loadDealsBtn.disabled = true;
+
+      try {
+        const res = await fetch(`${API_BASE}/contacts/${contactId}/deals`);
+        if (!res.ok) {
+          const errorBody = await res.json().catch(() => ({}));
+          throw new Error(errorBody.error || "Failed to load deals");
+        }
+
+        const data = await res.json();
+        const results = data.results || [];
+
+        if (results.length === 0) {
+          setStatus(dealsStatusEl, "No deals found for this contact.", "");
+          return;
+        }
+
+        setStatus(
+          dealsStatusEl,
+          `Loaded ${results.length} deal(s) for this contact.`,
+          "success"
+        );
+        dealsListEl.innerHTML = "";
+
+        results.forEach(deal => {
+          const p = deal.properties || {};
+          const card = document.createElement("div");
+          card.className = "deal-card";
+          card.innerHTML = `
+            <strong>${p.dealname || "Unnamed deal"}</strong><br />
+            <span class="small">Amount: ${p.amount || "N/A"} · Stage: ${p.dealstage || "N/A"}</span><br />
+            <span class="small">Deal ID: ${deal.id}</span>
+          `;
+          dealsListEl.appendChild(card);
+        });
+      } catch (err) {
+        console.error(err);
+        setStatus(dealsStatusEl, "Error loading deals: " + err.message, "error");
+      } finally {
+        loadDealsBtn.disabled = false;
+      }
+    }
+
+    loadDealsBtn.addEventListener("click", loadDealsForContact);
+
+    // Initial load
+    loadContacts();
+  </script>
+</body>
+</html>
+
